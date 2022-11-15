@@ -36,7 +36,10 @@ class UltraSonicSensor(object):
 
         while self.echo.value() == 0:
             end_time = time.time()
-        
+            # Make sure we dont get stuck in an infinite loop incase we miss the return signal
+            if end_time - start_time > 0.05: # 0.05 so we dont waste more than 0.05 seconds
+                return 0
+
         total_time = end_time - start_time
 
         distance = total_time * GET_ACTUAL_DISTANCE_MULTIPLIER_CM
