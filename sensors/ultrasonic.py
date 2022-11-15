@@ -3,7 +3,7 @@ import time
 
 from machine import Pin
 
-from constants import GET_ACTUAL_DISTANCE_MULTIPLIER_CM
+from constants import ACTUAL_DISTANCE_MULTIPLIER_CM
 
 
 class UltraSonicSensor(object):
@@ -42,6 +42,6 @@ class UltraSonicSensor(object):
 
         total_time = end_time - start_time
 
-        distance = total_time * GET_ACTUAL_DISTANCE_MULTIPLIER_CM
+        distance = total_time * ACTUAL_DISTANCE_MULTIPLIER_CM
 
         return distance
