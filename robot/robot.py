@@ -1,9 +1,10 @@
 """Robot class."""
+from typing import Tuple
 # Sensors
-from sensors.gyro import GyroSensor
-from sensors.ultrasonic import UltraSonicSensor
+from robot.sensors.gyro import GyroSensor
+from robot.sensors.ultrasonic import UltraSonicSensor
 # Motors
-from motors.DualMotorDriverCarriers import DualMotorDriverCarrier
+from robot.motors.DualMotorDriverCarriers import DualMotorDriverCarrier
 
 
 class Robot(object):
@@ -28,7 +29,6 @@ class Robot(object):
         # Constant variables
         self.turn_offset = 0.3 # How much the robot overturns on turning at default speed
 
-    
     def dual_drive(self, left_motor_speed: int, right_motor_speed: int) -> None:
         """
         Set left and right motor speeds.
@@ -40,7 +40,7 @@ class Robot(object):
         """
         self.motors.set_left_motor_speed(left_motor_speed)
         self.motors.set_right_motor_speed(right_motor_speed)
-    
+
     def turn(self, target_angle: int, speed: int=70) -> None:
         """
         Turn to target angle with given speed.
@@ -60,7 +60,7 @@ class Robot(object):
             while cur_angle > target_angle:
                 self.dual_drive(-speed, speed)
                 cur_angle = self.gyro.get_angle()
-    
+
     def drive(self, distance: float, speed: int, angle: int) -> None:
         """
         Drive straight at given angle and speed for given distance.
@@ -72,3 +72,15 @@ class Robot(object):
         :return: None
         """
         # TODO
+
+    def measure_distances(self) -> Tuple[float, float, float]:
+        """
+        Measure distances from all ultrasonic sensors.
+
+        :return: Tuple of floats containing the measured distances of the robot's three ultrasonic sensors in the order (left, front, right)
+        """
+        left_distance = self.l_us.measure_distance()
+        front_distance = self.f_us.measure_distance()
+        right_distance = self.r_us.measure_distance()
+
+        return left_distance, front_distance, right_distance
