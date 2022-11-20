@@ -43,5 +43,4 @@ class GyroSensor(object):
 
         :return: Angle of the robot with accuracy up to 0.1 degrees
         """
-        return round((360 + self.get_heading() + self.offset) % 360, 1)
-    
+        return round((360 + self.get_heading() - self.offset) % 360, 1)
