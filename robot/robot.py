@@ -29,6 +29,7 @@ class Robot(object):
 
         # Constant variables
         self.turn_offset = 0 # How much the robot overturns on turning at default speed, use for this not yet implemented
+        self.braking_distance = 0 # How long the braking distance is when driving at full speed.
 
     def dual_drive(self, left_motor_speed: int, right_motor_speed: int) -> None:
         """
@@ -107,13 +108,27 @@ class Robot(object):
         """
         Drive straight at given angle and speed for given distance.
 
+        Make sure robot starts at the correct angle, or the distance wont be calculated correctly
+
         :param distance: distance to drive in centimeters.
         :param speed: percentage of speed to drive at.
-        :param angle: angle at which to drive at.
+        :param angle: angle at which to drive at. - NOT CURRENTLY IMPLEMENTED
 
         :return: None
         """
-        # TODO
+        start_dist = cur_dist = self.f_us.measure_distance()
+        if speed > 0:
+            end_dist = start_dist - distance
+            while cur_dist > end_dist - self.braking_distance:
+                self.dual_drive(speed, speed)
+                cur_dist = self.f_us.measure_distance()
+        else:
+            end_dist = start_dist + distance
+            while cur_dist < end_dist - self.braking_distance:
+                self.dual_drive(speed, speed)
+                cur_dist = self.f_us.measure_distance()
+
+        self.brake()
 
     def measure_distances(self) -> Tuple[float, float, float]:
         """

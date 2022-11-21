@@ -1,5 +1,7 @@
 """Constants to be used."""
 import operator
+from typing import List
+
 # Physical constants
 SOUND_SPEED_CMPS = 34300 # Speed of sound in centimeters per second
 
@@ -15,3 +17,9 @@ COMPARISON_OPERATORS = {
     '<=': operator.le,
     '!=': operator.ne
 }
+
+# Labyrinth constants
+LABYRINTH_SQUARE_LENGTH_CM = 18 # Length of a single maze square in centimeters
+
+# Type definitions
+maze = List[List[int]] # type definition for the maze matrix
