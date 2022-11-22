@@ -1,7 +1,8 @@
 """Helper functions and classes for solving maze."""
 from typing import Set, Tuple
+from __future__ import annotations
 
-from constants import maze
+from mazesolver.maze import Maze
 
 
 def get_relative_coords(x: int, y: int, heading: int) -> Tuple[int, int]:
@@ -27,7 +28,7 @@ def get_relative_coords(x: int, y: int, heading: int) -> Tuple[int, int]:
 
 
 class Node(object):
-    def __init__(self, x: int, y: int, parent=None) -> None:
+    def __init__(self, x: int, y: int, parent: Node=None) -> None:
         """
         Initialize Node.
 
@@ -39,7 +40,7 @@ class Node(object):
         """
         self.x = x
         self.y = y
-        self.parent = parent if parent is not None else self
+        self.parent = parent
 
     def __ne__(self, other) -> bool:
         return not (self.x == other.x and self.y == other.y)
@@ -70,14 +71,12 @@ def is_middle_square(node: Node, maze_width: int, maze_height: int) -> bool:
     return node.x in x_mid and node.y in y_mid
 
 
-def get_possible_next_moves(x: int, y: int, maze_width: int, maze_height: int, maze: maze) -> Set[Tuple[int, int]]:
+def get_possible_next_moves(x: int, y: int, maze: Maze) -> Set[Tuple[int, int]]:
     """
     Get possible next moves from given position in a given maze.
 
     :param x: x coordinate
     :param y: y coordinate
-    :param maze_width: width of the maze
-    :param maze_height: height of the maze
     :parma maze: maze where robot is in
 
     :return: set of moves in the form {(x, y), (x, y) ...}
@@ -86,12 +85,54 @@ def get_possible_next_moves(x: int, y: int, maze_width: int, maze_height: int, m
 
     if x - 1 >= 0 and maze[y][x - 1] == 1:
         moves.add((x - 1, y))
-    if x + 1 < maze_width and maze[y][x + 1] == 1:
+    if x + 1 < maze.width and maze[y][x + 1] == 1:
         moves.add((x + 1, y))
 
     if y - 1 >= 0 and maze[y - 1][x] == 1:
         moves.add((x, y - 1))
-    if y + 1 < maze_height and maze[y + 1][x] == 1:
+    if y + 1 < maze.height and maze[y + 1][x] == 1:
         moves.add((x, y + 1))
 
     return moves
+
+
+def reverse_linked_list(node: Node) -> Node:
+    """
+    Reverse the linked list (nodes) and return the first node.
+
+    :param node: First node of the linked list to reverse
+    """
+    cur_node = node
+    prev_node: Node = None
+    next_node: Node = None
+
+    while cur_node != None:
+        next_node = cur_node.parent
+        cur_node.parent = prev_node
+        prev_node = cur_node
+        cur_node = next_node
+
+    return cur_node
+
+
+def get_distance_to_next_square_center(distance_to_wall: float, side_length: float, forward: bool=True) -> float:
+    """
+    Get the distance from current position to the next squares center.
+
+    :param distance_to_wall: robot's current distance to wall. Robot should be positioned approximately in the center of it's current square.
+    :param side_length: length of a squares side in the maze in centimeters
+    :param forward: whether the next square is ahead of the robot or behind the robot
+
+    :return: distance to the next squares center.
+    """
+    squares_ahead = distance_to_wall // side_length
+    if squares_ahead > 0: # We are not at the edge
+        if forward:
+            next_square_center_point_distance_from_wall = (squares_ahead - 1) * side_length + side_length / 2
+            dist_to_next_square_center_point = distance_to_wall - next_square_center_point_distance_from_wall
+        else:
+            next_square_center_point_distance_from_wall = squares_ahead * side_length + side_length / 2
+            dist_to_next_square_center_point = next_square_center_point_distance_from_wall - distance_to_wall
+        return dist_to_next_square_center_point
+    else:
+        return 0

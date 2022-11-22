@@ -52,7 +52,7 @@ class Robot(object):
         self.motors.set_left_motor_speed(0)
         self.motors.set_right_motor_speed(0)
 
-    def turn_until(self, left_motor_speed: int, right_motor_speed: int, angle: int, cmp_to_current_angle: str='>', brake: bool=False) -> None:
+    def turn_until(self, left_motor_speed: int, right_motor_speed: int, angle: int, cmp_to_current_angle: str='>') -> None:
         """
         Turn the robot until a condition is no longer met.
 
@@ -60,18 +60,16 @@ class Robot(object):
         :param right_motor_speed: speed at which to turn the right motor
         :param angle: angle to compare with current angle
         :param cmp_to_current_angle: what operation to use when comparing (">", "<", ">=", "<=", "==", "!=")
-        :param brake: whether to brake at the end or not.
 
         :return: None
         """
         cur_angle = self.gyro.get_angle()
 
+        self.dual_drive(left_motor_speed, right_motor_speed)
         while COMPARISON_OPERATORS[cmp_to_current_angle](angle, cur_angle):
-            self.dual_drive(left_motor_speed, right_motor_speed)
             cur_angle = self.gyro.get_angle()
 
-        if brake:
-            self.brake()
+        self.brake()
 
     def turn(self, target_angle: int, speed: int=70) -> None:
         """
@@ -104,7 +102,7 @@ class Robot(object):
 
         self.brake()
 
-    def drive(self, distance: float, speed: int, angle: int) -> None:
+    def drive(self, distance: float, speed: int, angle: int, brake: bool=True) -> None:
         """
         Drive straight at given angle and speed for given distance.
 
@@ -113,22 +111,47 @@ class Robot(object):
         :param distance: distance to drive in centimeters.
         :param speed: percentage of speed to drive at.
         :param angle: angle at which to drive at. - NOT CURRENTLY IMPLEMENTED
+        :param brake: whether to brake or not
 
         :return: None
         """
         start_dist = cur_dist = self.f_us.measure_distance()
         if speed > 0:
             end_dist = start_dist - distance
+            self.dual_drive(speed, speed)
             while cur_dist > end_dist - self.braking_distance:
-                self.dual_drive(speed, speed)
                 cur_dist = self.f_us.measure_distance()
         else:
             end_dist = start_dist + distance
+            self.dual_drive(speed, speed)
             while cur_dist < end_dist - self.braking_distance:
-                self.dual_drive(speed, speed)
                 cur_dist = self.f_us.measure_distance()
 
-        self.brake()
+        if brake:
+            self.brake()
+
+    def drive_until_dist_from_wall(self, distance: float, speed: int, brake: bool=True) -> None:
+        """
+        Drive until the robot reaches a certain distance from the wall.
+
+        :param distance: distance to reach from the wall the robot is facing in centimeters
+        :param speed: speed at which the robot should drive at (-100 to 100)
+        :param brake: whether to brake at the end
+
+        :return: None
+        """
+        cur_reading = self.f_us.measure_distance()
+        if speed > 0:
+            self.dual_drive(speed, speed)
+            while cur_reading - self.braking_distance > distance:
+                cur_reading = self.f_us.measure_distance()
+        else:
+            self.dual_drive(-speed, -speed)
+            while cur_reading + self.braking_distance < distance:
+                cur_reading = self.f_us.measure_distance()
+
+        if brake:
+            self.brake()
 
     def measure_distances(self) -> Tuple[float, float, float]:
         """

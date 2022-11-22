@@ -2,14 +2,14 @@
 from typing import List
 
 from robot.robot import Robot
-from constants import LABYRINTH_SQUARE_LENGTH_CM, maze
-from mazesolver.helper import Node, is_middle_square, get_possible_next_moves
+from constants import command_list
+from mazesolver.helper import Node, is_middle_square, get_possible_next_moves, reverse_linked_list
+from mazesolver.mazerunner import MazeRunner
+from mazesolver.maze import Maze
 
-maze = List[List[int]]
 
-
-class MazeSolver(object):
-    def __init__(self, robot: Robot, maze: maze, start_x: int, start_y: int) -> None:
+class MazeSolver(MazeRunner):
+    def __init__(self, robot: Robot, maze: Maze, start_x: int, start_y: int) -> None:
         """
         Initialize MazeSolver class.
 
@@ -22,13 +22,11 @@ class MazeSolver(object):
 
         :return: None
         """
-        self.robot = robot
-        self.maze = maze
-        self.maze_width, self.maze_height = len(self.maze[0]), len(self.maze)
+        super().__init__(robot, maze)
 
-        self.optimal_path = self.find_optimal_path_bfs(start_x, start_y)
+        optimal_path = self.find_optimal_path_bfs(start_x, start_y)
     
-    def find_optimal_path_bfs(self, start_x: int, start_y: int) -> maze:
+    def find_optimal_path_bfs(self, start_x: int, start_y: int) -> Node:
         """
         Find the optimal path to the center of the grid using breadth first search.
         
@@ -37,14 +35,10 @@ class MazeSolver(object):
 
         :return: A maze with a single possible path to the center - the shortest path found
         """
-        optimal_maze = [[0 for i in range(self.maze_width)] for j in range(self.maze_height)]
-        visited = [[0 for i in range(self.maze_width)] for j in range(self.maze_height)]
-
-        optimal_maze[start_y][start_x] = 1
+        visited = self.maze.get_new_maze(0)
         visited[start_y][start_x] = 1
 
         start_node = Node(start_x, start_y)
-
         queue = [start_node]
         final_node = None
 
@@ -52,28 +46,36 @@ class MazeSolver(object):
             tmp_node = queue.pop()
             x, y = tmp_node.x, tmp_node.y
 
-            if is_middle_square(tmp_node, self.maze_width, self.maze_height): # Goal reached
+            if is_middle_square(tmp_node, self.maze.width, self.maze.height): # Goal reached
                 final_node = tmp_node
                 break
 
-            moves = get_possible_next_moves(x, y, self.maze_width, self.maze_height, self.maze)
+            moves = get_possible_next_moves(x, y, self.maze)
             for new_x, new_y in moves:
-                if visited[new_y][new_x] == 0 # Node is not visited
+                if visited[new_y][new_x] == 0: # Node is not visited
                     new_node = Node(new_x, new_y, tmp_node)
                     queue.insert(0, new_node)
                     visited[new_y][new_x] = 1
 
         if final_node is None:
-            return -1
+            return None
 
-        cur_node = final_node
-        while cur_node != start_node:
-            optimal_maze[cur_node.y][cur_node.x] = 1
-            cur_node = cur_node.parent
+        return final_node
 
-        return optimal_maze
-
-    def drive_optimal_path(self) -> None:
+    def construct_optimal_path(self, start_node: Node) -> command_list:
         """
-        Finish the maze in the most optimal path
+        Finish the maze in the most optimal path.
+
+        :param start_x: x coordinate to start from
+        :param start_y: y coordinate to start from
+
+        :return: List of commands to execute to drive the optimal path in the format [("COMMAND", (param1, param2, ...)), ...]
         """
+        cur_angle = 0
+        commands = []
+
+        # Initialize gyro sensor to 0.
+        cmd = (self.robot.gyro.reset_angle, (0,))
+        commands.append(cmd)
+
+

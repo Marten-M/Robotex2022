@@ -1,5 +1,7 @@
 """Dual motor driver carrier class. Model DRV8835"""
-from machine import Pin, PWM
+from machine import Pin
+from robot.helper import initialize_PWM_pin
+from constants import PWM_FREQUENCY, MAX_U16_INT
 
 
 class DualMotorDriverCarrier(object):
@@ -15,12 +17,10 @@ class DualMotorDriverCarrier(object):
         :return: None
         """
         # Left motor
-        self.lm_pwm = PWM(left_motor_enable_pin)
-        self.lm_pwm.freq(0)
+        self.lm_pwm = initialize_PWM_pin(left_motor_enable_pin, PWM_FREQUENCY, 0)
         self.lm_phase = left_motor_phase_pin
         # Right motor
-        self.rm_pwm = PWM(right_motor_enable_pin)
-        self.rm_pwm.freq(0)
+        self.rm_pwm = initialize_PWM_pin(right_motor_enable_pin, PWM_FREQUENCY, 0)
         self.rm_phase = right_motor_phase_pin
 
     def set_left_motor_speed(self, speed: int) -> None:
@@ -33,10 +33,10 @@ class DualMotorDriverCarrier(object):
         """
         if speed >= 0:
             self.lm_phase.value(0)
-            self.lm_pwm.freq(speed)
+            self.lm_pwm.duty_u16(int((speed / 100) * MAX_U16_INT))
         else:
             self.lm_phase.value(1)
-            self.lm_pwm.freq(-speed)
+            self.lm_pwm.duty_u16(int((-speed / 100) * MAX_U16_INT))
 
     def set_right_motor_speed(self, speed: int) -> None:
         """
@@ -48,7 +48,7 @@ class DualMotorDriverCarrier(object):
         """
         if speed >= 0:
             self.rm_phase.value(1)
-            self.rm_pwm.freq(speed)
+            self.rm_pwm.duty_u16(int((speed / 100) * MAX_U16_INT))
         else:
             self.rm_phase.value(0)
-            self.rm_pwm.freq(-speed)
+            self.rm_pwm.duty_u16(int((-speed / 100) * MAX_U16_INT))
