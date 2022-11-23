@@ -1,9 +1,7 @@
 """Class for solving the maze."""
-from typing import List
-
 from robot.robot import Robot
 from constants import command_list
-from mazesolver.helper import Node, is_middle_square, get_possible_next_moves, reverse_linked_list
+from mazesolver.helper import Node, is_middle_square, get_possible_next_moves, get_angle_robot_must_be_at_to_reach_next_square, get_distance_to_wall_from_square_center
 from mazesolver.mazerunner import MazeRunner
 from mazesolver.maze import Maze
 
@@ -69,13 +67,34 @@ class MazeSolver(MazeRunner):
         :param start_x: x coordinate to start from
         :param start_y: y coordinate to start from
 
-        :return: List of commands to execute to drive the optimal path in the format [("COMMAND", (param1, param2, ...)), ...]
+        :return: List of commands to execute to drive the optimal path in the format [(function, (param1, param2, ...)), ...]
         """
-        cur_angle = 0
         commands = []
 
-        # Initialize gyro sensor to 0.
-        cmd = (self.robot.gyro.reset_angle, (0,))
+        cur_angle = get_angle_robot_must_be_at_to_reach_next_square(start_node, start_node.parent)
+
+        # Initialize gyro sensor
+        cmd = (self.robot.gyro.reset_angle, (cur_angle,))
         commands.append(cmd)
 
+        cur_node = start_node
 
+        while cur_node.parent != None:
+            next_node = cur_node.parent
+            new_angle = get_angle_robot_must_be_at_to_reach_next_square(cur_node, next_node)
+
+            if cur_angle != new_angle: # Turn must be made
+                # Drive to the current point
+                dist_from_wall = get_distance_to_wall_from_square_center(cur_node, cur_angle, self.maze)
+                cmd = (self.robot.drive_until_dist_from_wall, (dist_from_wall, 100))
+                commands.append(cmd)
+
+                cmd = (self.robot.turn, (new_angle, 100)) # Turn to angle
+                commands.append(cmd)
+                cur_angle = new_angle
+        # Final drive
+        dist_from_wall = get_distance_to_wall_from_square_center(cur_node, cur_angle, self.maze)
+        cmd = (self.robot.drive_until_dist_from_wall, (dist_from_wall, 100))
+        commands.append(cmd)
+
+        return commands

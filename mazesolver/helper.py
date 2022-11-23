@@ -136,3 +136,48 @@ def get_distance_to_next_square_center(distance_to_wall: float, side_length: flo
         return dist_to_next_square_center_point
     else:
         return 0
+
+
+def get_angle_robot_must_be_at_to_reach_next_square(cur_node: Node, next_node: Node) -> int:
+    """
+    Get the angle the robot must be at to reach the next square, if driving forwards.
+
+    :param cur_node: node the robot is currently at
+    :param next_node: next node the robot must reach
+
+    :return: angle at which the robot needs to be to drive forward to reach next node
+    """
+    delta_x = cur_node.x - next_node.x
+    delta_y = cur_node.y - next_node.y
+    
+    if delta_x != 0: # Movement is horizontal
+        if delta_x > 0: # Movement is to the west
+            return 270
+        else: # Movement is to the east
+            return 90
+    else: # Movement is vertical
+        if delta_y > 0: # Movement is to the north
+            return 0
+        else: # Movement is to the south
+            return 180
+
+
+def get_distance_to_wall_from_square_center(node: Node, robot_angle: int, maze: Maze) -> float:
+    """
+    Get distance from a square's center to wall in the direction the robot is facing.
+
+    :param node: the square the robot is in
+    :param robot_angle: angle of the robot rounded up to a multiple of 90 degrees
+    :maze: maze the robot is in
+
+    :return: distance from the square's center the robot is in to the wall the robot is facing
+    """
+    x, y = node.x, node.y
+    counter = 0
+
+    while maze.width > x and maze.height > y and maze[y][x] == 1:
+        counter += 1
+        x, y = get_relative_coords(x, y, robot_angle)
+
+    dist = (counter - 1) * maze.side_length + maze.side_length / 2
+    return dist

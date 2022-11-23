@@ -9,7 +9,7 @@ from robot.motors.DualMotorDriverCarriers import DualMotorDriverCarrier
 from constants import COMPARISON_OPERATORS
 
 class Robot(object):
-    def __init__(self, motors: DualMotorDriverCarrier, gyro: GyroSensor, left_ultrasonic: UltraSonicSensor, front_ultrasonic: UltraSonicSensor, right_ultrasonic: UltraSonicSensor) -> None:
+    def __init__(self, motors: DualMotorDriverCarrier, gyro: GyroSensor, left_ultrasonic: UltraSonicSensor, front_ultrasonic: UltraSonicSensor, right_ultrasonic: UltraSonicSensor, width: float, length: float, height: float) -> None:
         """
         Initialize Robot class.
 
@@ -18,6 +18,9 @@ class Robot(object):
         :param left_ultrasonic: left side ultrasonic sensor
         :param front_ultrasonic: front ultrasonic sensor
         :param right_ultrasonic: right side ultrasonic sensor
+        :param width: width of the robot in centimeters
+        :param length: length of the robot in centimeters
+        :param height: height of the robot in centimeters
         """
         self.motors = motors
 
@@ -30,6 +33,10 @@ class Robot(object):
         # Constant variables
         self.turn_offset = 0 # How much the robot overturns on turning at default speed, use for this not yet implemented
         self.braking_distance = 0 # How long the braking distance is when driving at full speed.
+        # Robot dimensions
+        self.width = width
+        self.length = length
+        self.height = height
 
     def dual_drive(self, left_motor_speed: int, right_motor_speed: int) -> None:
         """
