@@ -1,13 +1,13 @@
 """Class for solving the maze."""
 from robot.robot import Robot
 from constants import command_list
-from mazesolver.helper import Node, is_middle_square, get_possible_next_moves, get_angle_robot_must_be_at_to_reach_next_square, get_distance_to_wall_from_square_center
+from mazesolver.helper import Node, is_middle_square, get_possible_next_moves, get_angle_robot_must_be_at_to_reach_next_square, get_distance_to_wall_from_square_center, reverse_linked_list
 from mazesolver.mazerunner import MazeRunner
 from mazesolver.maze import Maze
 
 
 class MazeSolver(MazeRunner):
-    def __init__(self, robot: Robot, maze: Maze, start_x: int, start_y: int) -> None:
+    def __init__(self, robot: Robot, maze: Maze) -> None:
         """
         Initialize MazeSolver class.
 
@@ -15,14 +15,10 @@ class MazeSolver(MazeRunner):
 
         :param robot: Robot that will solve the maze.
         :param maze: Maze in the form List[y][x], where a value of 1 means that square is accessible, 0 means it is not accessible
-        :param start_x: x coordinate, where the robot starts in
-        :param start_y: y coordinate, where the robot starts in
 
         :return: None
         """
         super().__init__(robot, maze)
-
-        optimal_path = self.find_optimal_path_bfs(start_x, start_y)
     
     def find_optimal_path_bfs(self, start_x: int, start_y: int) -> Node:
         """
@@ -98,3 +94,16 @@ class MazeSolver(MazeRunner):
         commands.append(cmd)
 
         return commands
+
+    def find_and_construct_optimal_path(self, start_x: int, start_y: int) -> command_list:
+        """
+        Find and construct the most optimal path to center.
+
+        :param start_x: x coordinate where the robot starts
+        :param start_y: y coordinate where the robot starts
+
+        :return: list of commands to execute to reach the center
+        """
+        optimal_path_last_node = self.find_optimal_path_bfs(start_x, start_y)
+        first_node = reverse_linked_list(optimal_path_last_node)
+        return self.construct_optimal_path(first_node)

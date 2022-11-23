@@ -3,6 +3,7 @@ from typing import Set, Tuple
 from __future__ import annotations
 
 from mazesolver.maze import Maze
+from constants import command_list
 
 
 def get_relative_coords(x: int, y: int, heading: int) -> Tuple[int, int]:
@@ -181,3 +182,15 @@ def get_distance_to_wall_from_square_center(node: Node, robot_angle: int, maze: 
 
     dist = (counter - 1) * maze.side_length + maze.side_length / 2
     return dist
+
+
+def execute_commands(commands: command_list) -> None:
+    """
+    Execute given commands.
+
+    :param commands: list of commands
+    
+    :return: None
+    """
+    for command, parameters in commands:
+        command(*parameters)
