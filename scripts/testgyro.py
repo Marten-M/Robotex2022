@@ -2,7 +2,6 @@ import sys
 root_folder = sys.path[0] = "/.."
 sys.path.insert(1, root_folder)
 
-from lib.hmc5883l import HMC5883L
 from time import sleep
 from constants import GYRO_SCL_PIN, GYRO_SDA_PIN
 from robot.sensors.gyro import GyroSensor
