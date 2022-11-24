@@ -94,7 +94,7 @@ class MazeSolver(MazeRunner):
 
         return commands
 
-    def find_and_construct_optimal_path(self, start_x: int, start_y: int):
+    def find_and_construct_optimal_path(self):
         """
         Find and construct the most optimal path to center.
 
@@ -103,6 +103,6 @@ class MazeSolver(MazeRunner):
 
         :return: list of commands to execute to reach the center
         """
-        optimal_path_last_node = self.find_optimal_path_bfs(start_x, start_y)
+        optimal_path_last_node = self.find_optimal_path_bfs(self.start_x, self.start_y)
         first_node = reverse_linked_list(optimal_path_last_node)
         return self.construct_optimal_path(first_node)

@@ -41,8 +41,6 @@ class Node(object):
 
     def __ne__(self, other) -> bool:
         return not (self.x == other.x and self.y == other.y)
-    
-
 
 
 def is_middle_square(node: Node, maze_width: int, maze_height: int) -> bool:
@@ -178,15 +176,3 @@ def get_distance_to_wall_from_square_center(node: Node, robot_angle: int, maze: 
 
     dist = (counter - 1) * maze.side_length + maze.side_length / 2
     return dist
-
-
-def execute_commands(commands) -> None:
-    """
-    Execute given commands.
-
-    :param commands: list of commands
-    
-    :return: None
-    """
-    for command, parameters in commands:
-        command(*parameters)

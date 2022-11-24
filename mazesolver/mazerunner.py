@@ -6,18 +6,21 @@ from mazesolver.maze import Maze
 
 
 class MazeRunner(object):
-    def __init__(self, robot: Robot, maze: Maze) -> None:
+    def __init__(self, robot: Robot, maze: Maze, start_x: int=0) -> None:
         """
         Initialize MazeRunner class.
 
         :param robot: Robot that will solve the maze.
+        :param start_x: x coordinate the robot will start in
 
         :return: None
         """
         self.robot = robot
 
         self.maze = maze
-    
+        self.start_x = start_x
+        self.start_y = self.maze.height - 1 # Robot always starts at the bottom of the maze
+
     def get_possible_directions(self) -> tuple:
         """
         Get possible further driving directions.

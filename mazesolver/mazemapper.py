@@ -1,5 +1,6 @@
 """Class for mapping the maze."""
 from mazesolver.mazerunner import MazeRunner
+from mazesolver.mazesolver import MazeSolver
 from robot.robot import Robot
 from mazesolver.helper import get_relative_coords
 from mazesolver.maze import Maze
@@ -24,7 +25,9 @@ class MazeMapper(MazeRunner):
 
         # How fast to explore the maze.
         self.exploration_speed = exploration_speed
- 
+
+        self.horizontal_pos_found = False
+
     def map_maze_dfs(self, x: int, y: int) -> None:
         """
         Map the maze using depth first search.
@@ -40,6 +43,21 @@ class MazeMapper(MazeRunner):
 
         left_possible, straight_possible, right_possible = self.get_possible_directions()
         closest_heading = self.robot.get_closest_90_degree_heading()
+
+        if not self.horizontal_pos_found and (left_possible or right_possible): # Horizontal position found
+            self.horizontal_pos_found = True
+            if left_possible: # Robot started in the right side of the maze
+                x = self.maze.width - 1
+
+                tmp_y = y
+                while tmp_y < self.maze.height: # Correct the maze mapping
+                    self.visited[tmp_y][0] = False
+                    self.maze[tmp_y][0] = 0
+
+                    self.visited[tmp_y][x] = True
+                    self.maze[tmp_y][x] = 1
+
+                    tmp_y += 1
 
         if left_possible:
             new_angle = 270 if closest_heading == 0 else closest_heading - 90
@@ -82,3 +100,15 @@ class MazeMapper(MazeRunner):
                 # Return to original position
                 self.drive_to_next_square_center(-self.exploration_speed)
                 self.robot.turn(closest_heading)
+
+    def get_maze_solver(self) -> MazeSolver:
+        """
+        Get a maze solver based on mapped maze.
+
+        :return: a maze solver class based on mapped maze.
+        """
+        solver = MazeSolver(self.robot, self.maze)
+        solver.start_x = self.start_x
+        solver.start_y = self.start_y
+
+        return solver

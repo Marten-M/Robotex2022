@@ -8,3 +8,7 @@ Technical details:
 * Uses 3 ultrasonic sensors, model `HC-SRO4`
 * Uses 1 dual motor driver carrier, model `DRV8835`
 * Uses 1 gyro sensor, model `GY-273 HMC5883L`
+
+**TODO:**
+* Add button press to activate next step in the program
+* Update robot measurements to match real ones in constants.py
