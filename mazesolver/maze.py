@@ -1,5 +1,4 @@
 """Class for the maze."""
-from __future__ import annotations
 
 
 class Maze(object):
@@ -28,7 +27,7 @@ class Maze(object):
             return self.maze == __o.maze
         return False
 
-    def get_new_maze(self, default_val) -> Maze:
+    def get_new_maze(self, default_val):
         """
         Get a new Maze object with exact same properties but with a customly filled value
 

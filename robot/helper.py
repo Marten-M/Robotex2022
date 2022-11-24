@@ -1,6 +1,5 @@
 """Helper functions for robot."""
 from machine import Pin, PWM
-from constants import PWM_FREQUENCY
 
 
 def initialize_PWM_pin(pwm_pin: Pin, frequency: int, duty: int) -> PWM:

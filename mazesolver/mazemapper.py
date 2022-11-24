@@ -1,6 +1,4 @@
 """Class for mapping the maze."""
-from typing import Tuple
-
 from mazesolver.mazerunner import MazeRunner
 from robot.robot import Robot
 from mazesolver.helper import get_relative_coords

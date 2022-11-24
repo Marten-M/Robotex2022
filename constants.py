@@ -1,6 +1,5 @@
 """Constants to be used."""
-import operator
-from typing import List, Tuple, Callable
+# from typing import List, Tuple, Callable
 from machine import Pin
 
 # Physical constants
@@ -11,12 +10,12 @@ ACTUAL_DISTANCE_MULTIPLIER_CM = SOUND_SPEED_CMPS / 2 # Speed of sound divided by
 
 # Constant tables
 COMPARISON_OPERATORS = {
-    '>': operator.gt,
-    '<': operator.lt,
-    '==': operator.eq,
-    '>=': operator.ge,
-    '<=': operator.le,
-    '!=': operator.ne
+    '>': lambda a, b: a > b,
+    '<': lambda a, b: a < b,
+    '==': lambda a, b: a == b,
+    '>=': lambda a, b: a >= b,
+    '<=': lambda a, b: a <= b,
+    '!=': lambda a, b: a != b
 }
 
 # Labyrinth constants
@@ -31,19 +30,19 @@ ROBOT_LENGTH_CM = 15
 ROBOT_HEIGHT_CM = 7
 
 # Type definitions
-maze = List[List[int]] # type definition for the maze matrix
-command_list = List[Tuple[Callable, Tuple[int]]]
+# maze = List[List[int]] # type definition for the maze matrix
+# command_list = List[Tuple[Callable, Tuple[int]]]
 
 # Technical constants
 PWM_FREQUENCY = 1000 # Frequency to set the PWM's to in Hz
 MAX_U16_INT = 65535 # Maximum size of a 16bit integer (2 ^ 16 - 1)
 
 # Motor pins
-MOTOR_DRIVER_CARRIER_POWER_PIN = Pin(10, Pin.OUT)
-LEFT_MOTOR_ENABLE_PIN = Pin(11, Pin.OUT)
-LEFT_MOTOR_PHASE_PIN = Pin(12, Pin.OUT)
-RIGHT_MOTOR_ENABLE_PIN = Pin(13, Pin.OUT)
-RIGHT_MOTOR_PHASE_PIN = Pin(14, Pin.OUT)
+MOTOR_DRIVER_CARRIER_MODE_PIN = Pin(19, Pin.OUT)
+LEFT_MOTOR_ENABLE_PIN = Pin(26, Pin.OUT)
+LEFT_MOTOR_PHASE_PIN = Pin(20, Pin.OUT)
+RIGHT_MOTOR_ENABLE_PIN = Pin(28, Pin.OUT)
+RIGHT_MOTOR_PHASE_PIN = Pin(21, Pin.OUT)
 
 # Gyro pins
 GYRO_SCL_PIN = Pin(15)

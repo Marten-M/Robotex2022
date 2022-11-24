@@ -1,6 +1,5 @@
 """Class for solving the maze."""
 from robot.robot import Robot
-from constants import command_list
 from mazesolver.helper import Node, is_middle_square, get_possible_next_moves, get_angle_robot_must_be_at_to_reach_next_square, get_distance_to_wall_from_square_center, reverse_linked_list
 from mazesolver.mazerunner import MazeRunner
 from mazesolver.maze import Maze
@@ -56,7 +55,7 @@ class MazeSolver(MazeRunner):
 
         return final_node
 
-    def construct_optimal_path(self, start_node: Node) -> command_list:
+    def construct_optimal_path(self, start_node: Node):
         """
         Finish the maze in the most optimal path.
 
@@ -95,7 +94,7 @@ class MazeSolver(MazeRunner):
 
         return commands
 
-    def find_and_construct_optimal_path(self, start_x: int, start_y: int) -> command_list:
+    def find_and_construct_optimal_path(self, start_x: int, start_y: int):
         """
         Find and construct the most optimal path to center.
 

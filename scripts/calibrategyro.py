@@ -54,7 +54,7 @@ if __name__ == "__main__":
         except KeyboardInterrupt:
             print()
             print('Got ctrl-c')
-            
+
             xs=1
             ys=(Xmax-Xmin)/(Ymax-Ymin)
             xb =xs*(1/2*(Xmax-Xmin)-Xmax)

@@ -25,7 +25,7 @@ def get_robot() -> Robot:
 
     :return: a robot with parameters specifid in constants file
     """
-    dmdc = DualMotorDriverCarrier(LEFT_MOTOR_ENABLE_PIN, LEFT_MOTOR_PHASE_PIN, RIGHT_MOTOR_ENABLE_PIN, RIGHT_MOTOR_PHASE_PIN)
+    dmdc = DualMotorDriverCarrier(LEFT_MOTOR_ENABLE_PIN, LEFT_MOTOR_PHASE_PIN, RIGHT_MOTOR_ENABLE_PIN, RIGHT_MOTOR_PHASE_PIN, MOTOR_DRIVER_CARRIER_MODE_PIN)
     
     gyro = GyroSensor(GYRO_SCL_PIN, GYRO_SDA_PIN)
 

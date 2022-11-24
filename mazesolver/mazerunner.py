@@ -1,10 +1,9 @@
 """Class for the robot solving the maze."""
-from typing import Tuple
-
 from robot.robot import Robot
 
 from mazesolver.helper import get_distance_to_next_square_center
 from mazesolver.maze import Maze
+
 
 class MazeRunner(object):
     def __init__(self, robot: Robot, maze: Maze) -> None:
@@ -19,7 +18,7 @@ class MazeRunner(object):
 
         self.maze = maze
     
-    def get_possible_directions(self) -> Tuple[bool, bool, bool]:
+    def get_possible_directions(self) -> tuple:
         """
         Get possible further driving directions.
 

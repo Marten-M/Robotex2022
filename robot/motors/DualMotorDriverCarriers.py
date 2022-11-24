@@ -5,7 +5,7 @@ from constants import PWM_FREQUENCY, MAX_U16_INT
 
 
 class DualMotorDriverCarrier(object):
-    def __init__(self, left_motor_enable_pin: Pin, left_motor_phase_pin: Pin, right_motor_enable_pin: Pin, right_motor_phase_pin: Pin) -> None:
+    def __init__(self, left_motor_enable_pin: Pin, left_motor_phase_pin: Pin, right_motor_enable_pin: Pin, right_motor_phase_pin: Pin, mode_pin: Pin) -> None:
         """
         Initialize DualMotorDriverCarrier class. Model DRV8835.
 
@@ -16,6 +16,9 @@ class DualMotorDriverCarrier(object):
 
         :return: None
         """
+        # Set mode pin to high
+        self.mode_pin = mode_pin
+        mode_pin.value(1)
         # Left motor
         self.lm_pwm = initialize_PWM_pin(left_motor_enable_pin, PWM_FREQUENCY, 0)
         self.lm_phase = left_motor_phase_pin

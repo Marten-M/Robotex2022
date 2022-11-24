@@ -1,5 +1,4 @@
 """Robot class."""
-from typing import Tuple
 # Sensors
 from robot.sensors.gyro import GyroSensor
 from robot.sensors.ultrasonic import UltraSonicSensor
@@ -160,7 +159,7 @@ class Robot(object):
         if brake:
             self.brake()
 
-    def measure_distances(self) -> Tuple[float, float, float]:
+    def measure_distances(self) -> tuple:
         """
         Measure distances from all ultrasonic sensors.
 

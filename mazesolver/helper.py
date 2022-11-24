@@ -1,12 +1,8 @@
 """Helper functions and classes for solving maze."""
-from typing import Set, Tuple
-from __future__ import annotations
-
 from mazesolver.maze import Maze
-from constants import command_list
 
 
-def get_relative_coords(x: int, y: int, heading: int) -> Tuple[int, int]:
+def get_relative_coords(x: int, y: int, heading: int) -> tuple:
     """
     Get coordinates of maze square the robot is currently facing.
     
@@ -72,7 +68,7 @@ def is_middle_square(node: Node, maze_width: int, maze_height: int) -> bool:
     return node.x in x_mid and node.y in y_mid
 
 
-def get_possible_next_moves(x: int, y: int, maze: Maze) -> Set[Tuple[int, int]]:
+def get_possible_next_moves(x: int, y: int, maze: Maze) -> set:
     """
     Get possible next moves from given position in a given maze.
 
@@ -184,7 +180,7 @@ def get_distance_to_wall_from_square_center(node: Node, robot_angle: int, maze: 
     return dist
 
 
-def execute_commands(commands: command_list) -> None:
+def execute_commands(commands) -> None:
     """
     Execute given commands.
 

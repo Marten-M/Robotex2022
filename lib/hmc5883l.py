@@ -43,7 +43,7 @@ class HMC5883L:
         '5.6':  (6 << 5, 3.03),
         '8.1':  (7 << 5, 4.35)
     }
-    
+
     # Correction to be set after calibration
     xs=1
     ys=1
