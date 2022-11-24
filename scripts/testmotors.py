@@ -1,17 +1,16 @@
 import sys
 import os
-root_folder = os.path.join(sys.path[0], "..")
+root_folder = sys.path[0] + "/.."
 sys.path.insert(1, root_folder)
 
 from robot.motors.DualMotorDriverCarriers import DualMotorDriverCarrier
 import time
 from constants import LEFT_MOTOR_ENABLE_PIN, LEFT_MOTOR_PHASE_PIN, \
                       RIGHT_MOTOR_ENABLE_PIN, RIGHT_MOTOR_PHASE_PIN, \
-                      MOTOR_DRIVER_CARRIER_POWER_PIN
+                      MOTOR_DRIVER_CARRIER_MODE_PIN
 
 if __name__ == "__main__":
-    MOTOR_DRIVER_CARRIER_POWER_PIN.value(1)
-    motors = DualMotorDriverCarrier(LEFT_MOTOR_ENABLE_PIN, LEFT_MOTOR_PHASE_PIN, RIGHT_MOTOR_ENABLE_PIN, RIGHT_MOTOR_PHASE_PIN)
+    motors = DualMotorDriverCarrier(LEFT_MOTOR_ENABLE_PIN, LEFT_MOTOR_PHASE_PIN, RIGHT_MOTOR_ENABLE_PIN, RIGHT_MOTOR_PHASE_PIN, MOTOR_DRIVER_CARRIER_MODE_PIN)
 
     # Test left motor
     motors.set_left_motor_speed(100)

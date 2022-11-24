@@ -24,8 +24,7 @@
 # https://peppe8o.com
 
 import sys
-import os
-root_folder = os.path.join(sys.path[0], "..")
+root_folder = sys.path[0] = "/.."
 sys.path.insert(1, root_folder)
 
 from lib.hmc5883l import HMC5883L

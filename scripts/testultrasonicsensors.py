@@ -1,7 +1,6 @@
 """Test ultrasonic sensors."""
 import sys
-import os
-root_folder = os.path.join(sys.path[0], "..")
+root_folder = sys.path[0] = "/.."
 sys.path.insert(1, root_folder)
 
 from constants import LEFT_ULTRASONIC_ECHO_PIN, LEFT_ULTRASONIC_TRIGGER_PIN, \
