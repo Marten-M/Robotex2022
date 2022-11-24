@@ -23,7 +23,7 @@ class UltraSonicSensor(object):
         """
         Measure distance in centimeters.
 
-        :return: None
+        :return: distance from ultrasonic sensor in centimeters
         """
         while self.echo.value() == 1: # Make sure it isnt already 1
             pass
