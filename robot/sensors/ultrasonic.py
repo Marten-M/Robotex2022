@@ -31,14 +31,15 @@ class UltraSonicSensor(object):
         distance = 0
 
         self.trigger.value(1)
+        time.sleep_us(2)
         self.trigger.value(0)
-        end_time = start_time = time.time()
+        start_time = end_time = time.ticks_us()
 
         while self.echo.value() == 0:
-            end_time = time.time()
-            # Make sure we dont get stuck in an infinite loop incase we miss the return signal
-            if end_time - start_time > 0.05: # 0.05 so we dont waste more than 0.05 seconds
-                return 0
+            start_time = time.ticks_us()
+
+        while self.echo.value() == 1:
+            end_time = time.ticks_us()
 
         total_time = end_time - start_time
 
