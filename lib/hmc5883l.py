@@ -46,10 +46,10 @@ class HMC5883L:
 
     # Correction to be set after calibration
     xs=1
-    ys=1
-    xb=0
-    yb=0
-    
+    ys=1.301688
+    xb=17.69
+    yb=74.42001
+
     def __init__(self, scl: Pin, sda: Pin, address=0x1e, gauss='1.9', declination=(9, 73)):
         self.i2c = i2c = machine.SoftI2C(scl=scl, sda=sda, freq=15000)
 
@@ -81,7 +81,7 @@ class HMC5883L:
         gain = self.gain
 
         self.i2c.readfrom_mem_into(0x1e, 0x03, data)
-        
+    
         x = (data[0] << 8) | data[1]
         y = (data[4] << 8) | data[5]
         z = (data[2] << 8) | data[3]
