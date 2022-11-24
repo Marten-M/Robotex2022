@@ -43,6 +43,6 @@ class UltraSonicSensor(object):
 
         total_time = end_time - start_time
 
-        distance = total_time * ACTUAL_DISTANCE_MULTIPLIER_CM
+        distance = round(total_time * ACTUAL_DISTANCE_MULTIPLIER_CM, 1)
 
         return distance
