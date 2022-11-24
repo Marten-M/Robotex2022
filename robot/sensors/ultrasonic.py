@@ -31,6 +31,7 @@ class UltraSonicSensor(object):
         distance = 0
 
         self.trigger.value(1)
+        self.trigger.value(0)
         end_time = time.time()
         start_time = time.time()
 
