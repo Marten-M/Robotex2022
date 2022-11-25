@@ -125,7 +125,7 @@ class Robot(object):
         if speed > 0:
             end_dist = start_dist - distance
             self.dual_drive(speed, speed)
-            while cur_dist > end_dist - self.braking_distance:
+            while cur_dist > end_dist + self.braking_distance:
                 cur_dist = self.f_us.measure_distance()
         else:
             end_dist = start_dist + distance

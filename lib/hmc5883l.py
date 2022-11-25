@@ -46,9 +46,9 @@ class HMC5883L:
 
     # Correction to be set after calibration
     xs=1
-    ys=1.301688
-    xb=17.69
-    yb=74.42001
+    ys=0.9137255
+    xb=-228.75
+    yb=-165.31
 
     def __init__(self, scl: Pin, sda: Pin, address=0x1e, gauss='1.9', declination=(9, 73)):
         self.i2c = i2c = machine.SoftI2C(scl=scl, sda=sda, freq=15000)
