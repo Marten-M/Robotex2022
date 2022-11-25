@@ -28,7 +28,7 @@ class MazeMapper(MazeRunner):
 
         self.horizontal_pos_found = False
 
-    def map_maze_dfs(self, x: int, y: int) -> None:
+    def map_maze_dfs(self, x: int, y: int, angle: int) -> None:
         """
         Map the maze using depth first search.
 
@@ -36,13 +36,13 @@ class MazeMapper(MazeRunner):
 
         :param x: current x coordinate
         :param y: current y coordinate
+        :param angle: angle at which the robot is at
 
         :return: None
         """
         self.visited[y][x] = True
 
         left_possible, straight_possible, right_possible = self.get_possible_directions()
-        closest_heading = self.robot.get_closest_90_degree_heading()
 
         if not self.horizontal_pos_found and (left_possible or right_possible): # Horizontal position found
             self.horizontal_pos_found = True
@@ -60,46 +60,46 @@ class MazeMapper(MazeRunner):
                     tmp_y += 1
 
         if left_possible:
-            new_angle = 270 if closest_heading == 0 else closest_heading - 90
+            new_angle = 270 if angle == 0 else angle - 90
             new_x, new_y = get_relative_coords(x, y, new_angle)
             self.maze[new_y][new_x] = 1
 
             if not self.visited[new_y][new_x]:
                 # Head to next square
-                self.robot.turn(new_angle)
+                self.robot.turn_90_degrees("left")
                 self.drive_to_next_square_center(self.exploration_speed)
                 # Start mapping maze
-                self.map_maze_dfs(new_x, new_y)
+                self.map_maze_dfs(new_x, new_y, new_angle)
                 # Return to original position
                 self.drive_to_next_square_center(-self.exploration_speed)
-                self.robot.turn(closest_heading)
+                self.robot.turn_90_degrees("right")
 
         if straight_possible:
-            new_x, new_y = get_relative_coords(x, y, closest_heading)
+            new_x, new_y = get_relative_coords(x, y, angle)
             self.maze[new_y][new_x] = 1
 
             if not self.visited[new_y][new_x]:
                 # Head to next square
                 self.drive_to_next_square_center(self.exploration_speed)
                 # Map maze
-                self.map_maze_dfs(new_x, new_y)
+                self.map_maze_dfs(new_x, new_y, angle)
                 # Return to original position
                 self.drive_to_next_square_center(-self.exploration_speed)
 
         if right_possible:
-            new_angle = 0 if closest_heading == 270 else closest_heading + 90
+            new_angle = 0 if angle == 270 else angle + 90
             new_x, new_y = get_relative_coords(x, y, new_angle)
             self.maze[new_y][new_x] = 1
 
             if not self.visited[new_y][new_x]:
                 # Head to next square
-                self.robot.turn(new_angle)
+                self.robot.turn_90_degrees("right")
                 self.drive_to_next_square_center(self.exploration_speed)
                 # Map maze
-                self.map_maze_dfs(new_x, new_y)
+                self.map_maze_dfs(new_x, new_y, new_angle)
                 # Return to original position
                 self.drive_to_next_square_center(-self.exploration_speed)
-                self.robot.turn(closest_heading)
+                self.robot.turn_90_degrees("left")
 
     def get_maze_solver(self) -> MazeSolver:
         """

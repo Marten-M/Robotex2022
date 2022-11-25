@@ -176,3 +176,21 @@ def get_distance_to_wall_from_square_center(node: Node, robot_angle: int, maze: 
 
     dist = (counter - 1) * maze.side_length + maze.side_length / 2
     return dist
+
+
+def get_direction_to_turn(cur_angle: int, new_angle: int) -> str:
+    if cur_angle == 0:
+        if new_angle == 270:
+            return "left"
+        else:
+            return "right"
+    elif new_angle == 0:
+        if cur_angle == 90:
+            return "left"
+        else:
+            return "right"
+    else:
+        if cur_angle > new_angle:
+            return "left"
+        else:
+            return "right"

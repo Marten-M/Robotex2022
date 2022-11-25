@@ -13,7 +13,7 @@ def main():
     maze_mapper = MazeMapper(robot, maze, 70)
     # Button press should be here to start the mapping
 
-    maze_mapper.map_maze_dfs(maze_mapper.start_x, maze_mapper.start_y)
+    maze_mapper.map_maze_dfs(maze_mapper.start_x, maze_mapper.start_y, 0)
     # Solve the maze
     maze_solver = maze_mapper.get_maze_solver()
     commands = maze_solver.find_and_construct_optimal_path()

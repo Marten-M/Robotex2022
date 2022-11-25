@@ -53,4 +53,4 @@ class MazeRunner(object):
             dist = dist_to_wall - get_distance_to_next_square_center(dist_to_wall, self.maze.side_length, forward=True)
         else:
             dist = dist_to_wall + get_distance_to_next_square_center(dist_to_wall, self.maze.side_length, forward=False)
-        self.robot.drive_until_dist_from_wall(dist, speed, brake)
+        self.robot.drive_until_dist_from_wall(dist, speed, self.maze.side_length, brake)

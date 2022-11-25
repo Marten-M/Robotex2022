@@ -17,3 +17,6 @@ def initialize_PWM_pin(pwm_pin: Pin, frequency: int, duty: int) -> PWM:
     pwm.duty_u16(duty)
 
     return pwm
+
+def get_distances_to_wall(left_distance: float, right_distance: float, square_length: float) -> tuple:
+    return round(left_distance % square_length, 1), round(right_distance % square_length, 1)

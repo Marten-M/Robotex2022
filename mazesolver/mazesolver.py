@@ -1,6 +1,6 @@
 """Class for solving the maze."""
 from robot.robot import Robot
-from mazesolver.helper import Node, is_middle_square, get_possible_next_moves, get_angle_robot_must_be_at_to_reach_next_square, get_distance_to_wall_from_square_center, reverse_linked_list
+from mazesolver.helper import Node, is_middle_square, get_possible_next_moves, get_angle_robot_must_be_at_to_reach_next_square, get_distance_to_wall_from_square_center, reverse_linked_list, get_direction_to_turn
 from mazesolver.mazerunner import MazeRunner
 from mazesolver.maze import Maze
 
@@ -81,15 +81,16 @@ class MazeSolver(MazeRunner):
             if cur_angle != new_angle: # Turn must be made
                 # Drive to the current point
                 dist_from_wall = get_distance_to_wall_from_square_center(cur_node, cur_angle, self.maze)
-                cmd = (self.robot.drive_until_dist_from_wall, (dist_from_wall, 100))
+                cmd = (self.robot.drive_until_dist_from_wall, (dist_from_wall, 100, self.maze.side_length))
                 commands.append(cmd)
 
-                cmd = (self.robot.turn, (new_angle, 100)) # Turn to angle
+                direction = get_direction_to_turn(cur_angle, new_angle)
+                cmd = (self.robot.turn_90_degrees, (direction)) # Turn to angle
                 commands.append(cmd)
                 cur_angle = new_angle
         # Final drive
         dist_from_wall = get_distance_to_wall_from_square_center(cur_node, cur_angle, self.maze)
-        cmd = (self.robot.drive_until_dist_from_wall, (dist_from_wall, 100))
+        cmd = (self.robot.drive_until_dist_from_wall, (dist_from_wall, 100, self.maze.side_length))
         commands.append(cmd)
 
         return commands
