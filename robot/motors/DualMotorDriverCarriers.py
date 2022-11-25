@@ -50,8 +50,8 @@ class DualMotorDriverCarrier(object):
         :return: None
         """
         if speed >= 0:
-            self.rm_phase.value(1)
+            self.rm_phase.value(0)
             self.rm_pwm.duty_u16(int((speed / 100) * MAX_U16_INT))
         else:
-            self.rm_phase.value(0)
+            self.rm_phase.value(1)
             self.rm_pwm.duty_u16(int((-speed / 100) * MAX_U16_INT))
