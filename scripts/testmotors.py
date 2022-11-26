@@ -1,5 +1,4 @@
 import sys
-import os
 root_folder = sys.path[0] + "/.."
 sys.path.insert(1, root_folder)
 

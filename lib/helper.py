@@ -4,7 +4,7 @@ from machine import Pin
 from robot.robot import Robot
 from mazesolver.maze import Maze
 from robot.motors.DualMotorDriverCarriers import DualMotorDriverCarrier
-from robot.sensors.gyro import GyroSensor
+#from robot.sensors.gyro import GyroSensor
 from robot.sensors.ultrasonic import UltraSonicSensor
 from constants import *
 
@@ -28,8 +28,8 @@ def get_robot() -> Robot:
     """
     dmdc = DualMotorDriverCarrier(LEFT_MOTOR_ENABLE_PIN, LEFT_MOTOR_PHASE_PIN, RIGHT_MOTOR_ENABLE_PIN, RIGHT_MOTOR_PHASE_PIN, MOTOR_DRIVER_CARRIER_MODE_PIN)
     
-    gyro = GyroSensor(GYRO_SCL_PIN, GYRO_SDA_PIN)
-
+    #gyro = GyroSensor(GYRO_SCL_PIN, GYRO_SDA_PIN)
+    gyro = None
     l_us = UltraSonicSensor(LEFT_ULTRASONIC_TRIGGER_PIN, LEFT_ULTRASONIC_ECHO_PIN)
     f_us = UltraSonicSensor(FRONT_ULTRASONIC_TRIGGER_PIN, FRONT_ULTRASONIC_ECHO_PIN)
     r_us = UltraSonicSensor(RIGHT_ULTRASONIC_TRIGGER_PIN, RIGHT_ULTRASONIC_ECHO_PIN)

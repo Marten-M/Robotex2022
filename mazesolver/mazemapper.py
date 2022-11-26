@@ -4,6 +4,7 @@ from mazesolver.mazesolver import MazeSolver
 from robot.robot import Robot
 from mazesolver.helper import get_relative_coords
 from mazesolver.maze import Maze
+import time
 
 
 class MazeMapper(MazeRunner):
@@ -40,6 +41,7 @@ class MazeMapper(MazeRunner):
 
         :return: None
         """
+        time.sleep(1)
         self.visited[y][x] = True
 
         left_possible, straight_possible, right_possible = self.get_possible_directions()
@@ -100,6 +102,7 @@ class MazeMapper(MazeRunner):
                 # Return to original position
                 self.drive_to_next_square_center(-self.exploration_speed)
                 self.robot.turn_90_degrees("left")
+
 
     def get_maze_solver(self) -> MazeSolver:
         """

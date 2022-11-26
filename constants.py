@@ -16,15 +16,17 @@ COMPARISON_OPERATORS = {
 }
 
 # Labyrinth constants
-LABYRINTH_SQUARE_LENGTH_CM = 16.2 # Length of a single maze square in centimeters
+LABYRINTH_SQUARE_LENGTH_CM = 15 # Length of a single maze square in centimeters
 LABYRINTH_WALL_THICKNESS_CM = 1.2 # Thickness of a labyrinth wall
 LABYRINTH_SQUARES_HORIZONTAL = 16 # How many squares the labyrinth has horizontally
 LABYRINTH_SQUARES_VERTICAL = 16 # How many squares the labyrinth has vertically
 
 # Robot constants
-ROBOT_WIDTH_CM = 10
-ROBOT_LENGTH_CM = 15
+ROBOT_WIDTH_CM = 8
+ROBOT_LENGTH_CM = 11.5
 ROBOT_HEIGHT_CM = 7
+
+ROBOT_SPEED_CMPS = 44 # How much centimeters robot travels at 50% power in 1 second
 
 # Type definitions
 # maze = List[List[int]] # type definition for the maze matrix
@@ -41,9 +43,9 @@ ROBOT_SIDE_DISTANCES_SUM_CM = LABYRINTH_SQUARE_LENGTH_CM - ROBOT_WIDTH_CM # Sum 
 # Motor pins
 MOTOR_DRIVER_CARRIER_MODE_PIN = Pin(19, Pin.OUT)
 LEFT_MOTOR_ENABLE_PIN = Pin(26, Pin.OUT)
-LEFT_MOTOR_PHASE_PIN = Pin(20, Pin.OUT)
+LEFT_MOTOR_PHASE_PIN = Pin(21, Pin.OUT)
 RIGHT_MOTOR_ENABLE_PIN = Pin(28, Pin.OUT)
-RIGHT_MOTOR_PHASE_PIN = Pin(21, Pin.OUT)
+RIGHT_MOTOR_PHASE_PIN = Pin(22, Pin.OUT)
 
 # Gyro pins
 GYRO_SCL_PIN = Pin(9)
@@ -56,3 +58,10 @@ FRONT_ULTRASONIC_TRIGGER_PIN = Pin(14, Pin.OUT)
 FRONT_ULTRASONIC_ECHO_PIN = Pin(13, Pin.IN)
 RIGHT_ULTRASONIC_TRIGGER_PIN = Pin(3, Pin.OUT)
 RIGHT_ULTRASONIC_ECHO_PIN = Pin(4, Pin.IN)
+
+
+# Button pins
+MAPPING_BUTTON_OUT_PIN = Pin(17, Pin.OUT)
+MAPPING_BUTTON_IN_PIN = Pin(18, Pin.IN)
+SOLUTION_BUTTON_IN_PIN = Pin(12, Pin.OUT)
+SOLUTION_BUTTON_OUT_PIN = Pin(11, Pin.IN)

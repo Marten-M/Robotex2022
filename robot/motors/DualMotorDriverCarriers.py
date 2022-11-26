@@ -22,9 +22,11 @@ class DualMotorDriverCarrier(object):
         # Left motor
         self.lm_pwm = initialize_PWM_pin(left_motor_enable_pin, PWM_FREQUENCY, 0)
         self.lm_phase = left_motor_phase_pin
+        self.left_motor_speed = 0
         # Right motor
         self.rm_pwm = initialize_PWM_pin(right_motor_enable_pin, PWM_FREQUENCY, 0)
         self.rm_phase = right_motor_phase_pin
+        self.right_motor_speed = 0
 
     def set_left_motor_speed(self, speed: int) -> None:
         """
@@ -34,6 +36,7 @@ class DualMotorDriverCarrier(object):
 
         :return: None
         """
+        self.left_motor_speed = speed
         if speed >= 0:
             self.lm_phase.value(0)
             self.lm_pwm.duty_u16(int((speed / 100) * MAX_U16_INT))
@@ -49,6 +52,7 @@ class DualMotorDriverCarrier(object):
 
         :return: None
         """
+        self.right_motor_speed = speed
         if speed >= 0:
             self.rm_phase.value(0)
             self.rm_pwm.duty_u16(int((speed / 100) * MAX_U16_INT))

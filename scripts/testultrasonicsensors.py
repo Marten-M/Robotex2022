@@ -24,4 +24,4 @@ if __name__ == "__main__":
         print(f"Front distance: {f_reading} cm")
         print(f"Right distance: {r_reading} cm")
         print()
-        sleep(1.5)
+        sleep(0.01)

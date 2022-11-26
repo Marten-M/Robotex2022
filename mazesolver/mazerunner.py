@@ -3,6 +3,8 @@ from robot.robot import Robot
 
 from mazesolver.helper import get_distance_to_next_square_center
 from mazesolver.maze import Maze
+from constants import LABYRINTH_SQUARE_LENGTH_CM
+import time
 
 
 class MazeRunner(object):
@@ -50,7 +52,11 @@ class MazeRunner(object):
         """
         dist_to_wall = self.robot.f_us.measure_distance()
         if speed > 0:
-            dist = dist_to_wall - get_distance_to_next_square_center(dist_to_wall, self.maze.side_length, forward=True)
+        #     # dist = dist_to_wall - get_distance_to_next_square_center(dist_to_wall, self.maze.side_length, forward=True) - self.robot.length / 2
+            dist = get_distance_to_next_square_center(dist_to_wall, self.maze.side_length, forward=True) + self.robot.length / 2
         else:
-            dist = dist_to_wall + get_distance_to_next_square_center(dist_to_wall, self.maze.side_length, forward=False)
-        self.robot.drive_until_dist_from_wall(dist, speed, self.maze.side_length, brake)
+        #     # dist = dist_to_wall + get_distance_to_next_square_center(dist_to_wall, self.maze.side_length, forward=False) + self.robot.length / 2
+            dist = get_distance_to_next_square_center(dist_to_wall, self.maze.side_length, forward=False) - self.robot.length / 2
+        # self.robot.drive_until_dist_from_wall(dist, speed, self.maze.side_length, brake)
+        self.robot.drive(dist, speed, 0)
+        time.sleep(0.3)

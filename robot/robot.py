@@ -7,7 +7,7 @@ from robot.sensors.ultrasonic import UltraSonicSensor
 from robot.motors.DualMotorDriverCarriers import DualMotorDriverCarrier
 
 from robot.helper import get_distances_to_wall
-from constants import COMPARISON_OPERATORS
+from constants import COMPARISON_OPERATORS, ROBOT_SPEED_CMPS
 
 class Robot(object):
     def __init__(self, motors: DualMotorDriverCarrier, gyro: GyroSensor, left_ultrasonic: UltraSonicSensor, front_ultrasonic: UltraSonicSensor, right_ultrasonic: UltraSonicSensor, width: float, length: float, height: float) -> None:
@@ -33,8 +33,10 @@ class Robot(object):
 
         # Constant variables
         self.turn_offset = 0 # How much the robot overturns on turning at default speed, use for this not yet implemented
+        self.wiggle_room = 0.5 # How much wiggle room robot has
         self.braking_distance = 0 # How long the braking distance is when driving at full speed.
-        self.dist_inaccuracy = 0.2 # How accurately the ultrasonic sensor must detect a distance to turn accurately
+        self.dist_inaccuracy = 0 # How accurately the ultrasonic sensor must detect a distance to turn accurately
+        self.acceleration_delay_time = 5 # How many milliseconds to wait before increasing speed by 1
         # Robot dimensions
         self.width = width
         self.length = length
@@ -60,6 +62,7 @@ class Robot(object):
         """
         self.motors.set_left_motor_speed(0)
         self.motors.set_right_motor_speed(0)
+        time.sleep(0.05)
 
     def turn_until(self, left_motor_speed: int, right_motor_speed: int, angle: int, cmp_to_current_angle: str='>') -> None:
         """
@@ -112,22 +115,24 @@ class Robot(object):
         self.brake()
 
     def turn_90_degrees(self, direction: str):
+        time.sleep(0.2)
         if direction == "right":
-            r_dist = self.r_us.measure_distance()
-            f_dist = self.f_us.measure_distance()
-            self.dual_drive(70, -70)
-            time.sleep_ms(200)
-            while r_dist + self.dist_inaccuracy < f_dist:
-                f_dist = self.f_us.measure_distance()
+            # r_dist = self.r_us.measure_distance()
+            # f_dist = self.f_us.measure_distance()
+            self.dual_drive(40, -41)
+            time.sleep_ms(185)
+            # while r_dist + self.dist_inaccuracy < f_dist:
+            #     f_dist = self.f_us.measure_distance()
+            self.brake()
         else:
-            l_dist = self.l_us.measure_distance()
-            f_dist = self.f_us.measure_distance()
-            self.dual_drive(-70, 70)
-            time.sleep_ms(200)
-            while l_dist + self.dist_inaccuracy < f_dist:
-                f_dist = self.f_us.measure_distance()
-
+            # l_dist = self.l_us.measure_distance()
+            # f_dist = self.f_us.measure_distance()
+            self.dual_drive(-40, 41)
+            time.sleep_ms(185)
+            # while l_dist + self.dist_inaccuracy < f_dist:
+            #     f_dist = self.f_us.measure_distance()
         self.brake()
+        time.sleep(0.3)
 
     def drive(self, distance: float, speed: int, angle: int, brake: bool=True) -> None:
         """
@@ -142,20 +147,33 @@ class Robot(object):
 
         :return: None
         """
-        start_dist = cur_dist = self.f_us.measure_distance()
         if speed > 0:
-            end_dist = start_dist - distance
-            self.dual_drive(speed, speed)
-            while cur_dist > end_dist + self.braking_distance:
-                cur_dist = self.f_us.measure_distance()
+            self.dual_drive(speed, speed + 1)
+            time.sleep(distance / ROBOT_SPEED_CMPS * (50 / speed))
         else:
-            end_dist = start_dist + distance
-            self.dual_drive(speed, speed)
-            while cur_dist < end_dist - self.braking_distance:
-                cur_dist = self.f_us.measure_distance()
+            self.dual_drive(speed, speed - 1)
+            time.sleep(distance / ROBOT_SPEED_CMPS * (50 / -speed))
 
         if brake:
             self.brake()
+        
+    def accelerate_to_speed(self, target_speed: int) -> None:
+        """
+        Accelerate from current speed to a target speed.
+
+        :param target_speed: speed to reach
+
+        :return: None
+        """
+        cur_speed = max(self.motors.left_motor_speed, self.motors.right_motor_speed)
+        if target_speed > cur_speed:
+            for speed in range(cur_speed, target_speed + 1):
+                self.dual_drive(speed, speed)
+                time.sleep_ms(self.acceleration_delay_time)
+        else:
+            for speed in range(cur_speed, target_speed - 1, -1):
+                self.dual_drive(speed, speed)
+                time.sleep_ms(self.acceleration_delay_time)
 
     def drive_until_dist_from_wall(self, distance: float, speed: int, square_length: float, brake: bool=True) -> None:
         """
@@ -167,26 +185,27 @@ class Robot(object):
 
         :return: None
         """
+        if distance <= 0 or speed == 0:
+            return
         cur_reading = self.f_us.measure_distance()
         if speed > 0:
-            self.dual_drive(speed, speed)
+            self.dual_drive(speed, speed + 1)
             while cur_reading - self.braking_distance > distance:
                 left_dist, cur_reading, right_dist = self.measure_distances()
                 left_dist, right_dist = get_distances_to_wall(left_dist, right_dist, square_length)
-                if left_dist > right_dist:
-                    self.dual_drive(speed - math.ceil((left_dist - right_dist)) * 2, speed)
-                elif right_dist > left_dist:
-                    self.dual_drive(speed, speed - math.ceil(right_dist - left_dist) * 2)
+                if left_dist - right_dist > self.wiggle_room:
+                    self.dual_drive(speed - math.ceil(left_dist - right_dist), speed)
+                elif right_dist - left_dist > self.wiggle_room:
+                    self.dual_drive(speed, speed - math.ceil(right_dist - left_dist))
         else:
             self.dual_drive(speed, speed)
             while cur_reading + self.braking_distance < distance:
                 left_dist, cur_reading, right_dist = self.measure_distances()
                 left_dist, right_dist = get_distances_to_wall(left_dist, right_dist, square_length)
-                if left_dist > right_dist:
-                    self.dual_drive(speed + math.ceil((left_dist - right_dist)) * 2, speed)
-                elif right_dist > left_dist:
-                    self.dual_drive(speed, speed + math.ceil(right_dist - left_dist) * 2)
-
+                if left_dist - right_dist > self.wiggle_room:
+                    self.dual_drive(speed, speed)
+                elif right_dist - left_dist > self.wiggle_room:
+                    self.dual_drive(speed + math.ceil(right_dist - left_dist), speed)
         if brake:
             self.brake()
 

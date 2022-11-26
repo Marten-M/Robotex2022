@@ -121,16 +121,15 @@ def get_distance_to_next_square_center(distance_to_wall: float, side_length: flo
     :return: distance to the next squares center.
     """
     squares_ahead = distance_to_wall // side_length
-    if squares_ahead > 0: # We are not at the edge
-        if forward:
-            next_square_center_point_distance_from_wall = (squares_ahead - 1) * side_length + side_length / 2
-            dist_to_next_square_center_point = distance_to_wall - next_square_center_point_distance_from_wall
-        else:
-            next_square_center_point_distance_from_wall = squares_ahead * side_length + side_length / 2
-            dist_to_next_square_center_point = next_square_center_point_distance_from_wall - distance_to_wall
-        return dist_to_next_square_center_point
+    if squares_ahead > 0 and forward:
+        next_square_center_point_distance_from_wall = (squares_ahead - 1) * side_length + side_length / 2
+        dist_to_next_square_center_point = distance_to_wall - next_square_center_point_distance_from_wall
+    elif not forward:
+        next_square_center_point_distance_from_wall = (squares_ahead + 1) * side_length + side_length / 2
+        dist_to_next_square_center_point = next_square_center_point_distance_from_wall - distance_to_wall
     else:
         return 0
+    return dist_to_next_square_center_point
 
 
 def get_angle_robot_must_be_at_to_reach_next_square(cur_node: Node, next_node: Node) -> int:
@@ -178,7 +177,35 @@ def get_distance_to_wall_from_square_center(node: Node, robot_angle: int, maze: 
     return dist
 
 
+def get_number_of_squares_to_move(node: Node, robot_angle: int, maze: Maze) -> float:
+    """
+    Get distance from a square's center to wall in the direction the robot is facing.
+
+    :param node: the square the robot is in
+    :param robot_angle: angle of the robot rounded up to a multiple of 90 degrees
+    :maze: maze the robot is in
+
+    :return: distance from the square's center the robot is in to the wall the robot is facing
+    """
+    x, y = node.x, node.y
+    counter = 0
+
+    while maze.width > x and maze.height > y and maze[y][x] == 1:
+        counter += 1
+        x, y = get_relative_coords(x, y, robot_angle)
+
+    return counter
+
+
 def get_direction_to_turn(cur_angle: int, new_angle: int) -> str:
+    """
+    Get new direction to turn to.
+
+    :param cur_angle: current angle
+    :param new_angle: new angle
+
+    :return: string indicating whether to turn left or right
+    """
     if cur_angle == 0:
         if new_angle == 270:
             return "left"
